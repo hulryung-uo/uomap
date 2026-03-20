@@ -193,7 +193,8 @@
     const savedVisibility = getLayerVisibility();
 
     Object.entries(POI_CATEGORIES).forEach(([catId, cat]) => {
-      if (catId === 'vendor') return; // vendors handled separately
+      if (catId === 'vendor') return; // player vendors handled separately
+      if (catId === 'npc_vendor') return; // npc vendors loaded separately below
 
       const items = pois[catId] || [];
       const lg = L.layerGroup();
@@ -209,6 +210,26 @@
         lg.addTo(map);
       }
     });
+
+    // Load NPC vendors from ServUO spawn data
+    if (typeof NPC_VENDORS !== 'undefined') {
+      const npcVendors = NPC_VENDORS[facetId] || [];
+      const cat = POI_CATEGORIES.npc_vendor;
+      if (cat && npcVendors.length > 0) {
+        const lg = L.layerGroup();
+        npcVendors.forEach(v => {
+          const marker = createPOIMarker(
+            { name: v.name, x: v.x, y: v.y, desc: 'NPC Vendor' },
+            'npc_vendor', cat
+          );
+          marker.addTo(lg);
+        });
+        layerGroups.npc_vendor = lg;
+        if (savedVisibility.npc_vendor !== false) {
+          lg.addTo(map);
+        }
+      }
+    }
   }
 
   // ─── Create POI Marker ─────────────────────────────────
