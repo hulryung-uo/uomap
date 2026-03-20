@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UO Map - Ultima Online Interactive Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div id="sidebar">
+    <button id="sidebar-toggle"><i class="fa-solid fa-chevron-left"></i></button>
+
+    <div class="sidebar-header">
+      <h1>UO Map</h1>
+    </div>
+
+    <div class="sidebar-content">
+      <!-- Search -->
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="search" placeholder="Search locations..." autocomplete="off">
+      </div>
+      <div id="search-results"></div>
+
+      <!-- Map Selector -->
+      <div class="section-label">Facet</div>
+      <div class="map-selector">
+        <select id="map-select">
+          <option value="felucca">Felucca</option>
+          <option value="trammel" selected>Trammel</option>
+          <option value="ilshenar">Ilshenar</option>
+          <option value="malas">Malas</option>
+          <option value="tokuno">Tokuno Islands</option>
+        </select>
+      </div>
+
+      <!-- Layer Controls -->
+      <div class="section-label">Layers</div>
+      <div class="layer-controls" id="layer-controls"></div>
+
+      <!-- Vendors -->
+      <div class="section-label">Vendors</div>
+      <div class="vendor-actions">
+        <button class="btn btn-primary" id="btn-add-vendor">
+          <i class="fa-solid fa-plus"></i> Add
+        </button>
+        <button class="btn" id="btn-import-vendor">
+          <i class="fa-solid fa-file-import"></i> Import
+        </button>
+        <button class="btn" id="btn-export-vendor">
+          <i class="fa-solid fa-file-export"></i> Export
+        </button>
+      </div>
+      <input type="file" id="import-file" accept=".json">
+      <div id="vendor-list"></div>
+    </div>
+  </div>
+
+  <!-- Map -->
+  <div id="map"></div>
+
+  <!-- Coordinate Display -->
+  <div id="coords-display">X: 0 &nbsp; Y: 0</div>
+
+  <!-- Custom Zoom -->
+  <div class="custom-zoom">
+    <button id="zoom-in" title="Zoom In">+</button>
+    <button id="zoom-out" title="Zoom Out">&minus;</button>
+  </div>
+
+  <!-- Context Menu -->
+  <div id="context-menu">
+    <div class="context-menu-item" id="ctx-add-vendor">
+      <i class="fa-solid fa-shop"></i> Add Vendor Here
+    </div>
+    <div class="context-menu-separator"></div>
+    <div class="context-menu-item" id="ctx-copy-coords">
+      <i class="fa-solid fa-copy"></i> Copy Coordinates
+    </div>
+  </div>
+
+  <!-- Vendor Modal -->
+  <div class="modal-overlay" id="vendor-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modal-title">Add Vendor</h3>
+        <button class="modal-close" id="modal-close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <form id="vendor-form">
+          <input type="hidden" id="vendor-id">
+          <div class="form-group">
+            <label for="vendor-name">Name</label>
+            <input type="text" id="vendor-name" placeholder="Vendor or shop name" required>
+          </div>
+          <div class="form-group">
+            <label for="vendor-type">Type</label>
+            <select id="vendor-type"></select>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="vendor-x">X Coordinate</label>
+              <input type="number" id="vendor-x" required>
+            </div>
+            <div class="form-group">
+              <label for="vendor-y">Y Coordinate</label>
+              <input type="number" id="vendor-y" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="vendor-items">Items Sold</label>
+            <textarea id="vendor-items" placeholder="List of items..."></textarea>
+          </div>
+          <div class="form-group">
+            <label for="vendor-notes">Notes</label>
+            <textarea id="vendor-notes" placeholder="Additional notes..."></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-danger" id="btn-delete-vendor" style="display:none; margin-right:auto">
+          <i class="fa-solid fa-trash"></i> Delete
+        </button>
+        <button class="btn" id="btn-cancel-vendor">Cancel</button>
+        <button class="btn btn-primary" id="btn-save-vendor">
+          <i class="fa-solid fa-check"></i> Save
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Setup Overlay -->
+  <div id="setup-overlay">
+    <h3>Map Image Setup</h3>
+    <p>
+      Place your UO map image as <code>images/map_trammel.png</code> (or other facet names)
+      to see the full map background. The interactive markers work without it.
+    </p>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
