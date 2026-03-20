@@ -651,13 +651,22 @@
     // Start collapsed
     sidebar.classList.add('collapsed');
 
-    toggle.addEventListener('click', () => {
+    function toggleSidebar() {
       sidebar.classList.toggle('collapsed');
       const icon = toggle.querySelector('i');
       if (sidebar.classList.contains('collapsed')) {
         icon.className = 'fa-solid fa-chevron-right';
       } else {
         icon.className = 'fa-solid fa-chevron-left';
+      }
+    }
+
+    toggle.addEventListener('click', toggleSidebar);
+
+    // Click on the visible strip area when collapsed to open
+    sidebar.addEventListener('click', (e) => {
+      if (sidebar.classList.contains('collapsed') && e.target !== toggle && !toggle.contains(e.target)) {
+        toggleSidebar();
       }
     });
 

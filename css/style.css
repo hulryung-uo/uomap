@@ -101,7 +101,19 @@ body {
 }
 
 #sidebar.collapsed {
-  transform: translateX(calc(-1 * var(--sidebar-width)));
+  transform: translateX(calc(-1 * var(--sidebar-width) + 48px));
+}
+
+#sidebar.collapsed .sidebar-content {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#sidebar.collapsed .sidebar-header h1 {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-size: 13px;
+  letter-spacing: 0.04em;
 }
 
 .sidebar-header {
@@ -121,10 +133,13 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  transition: all var(--transition);
+  white-space: nowrap;
 }
 
 .sidebar-content {
   flex: 1;
+  transition: opacity var(--transition);
   overflow-y: auto;
   overflow-x: hidden;
   padding: 16px 20px;
@@ -165,6 +180,11 @@ body {
   font-size: 14px;
   transition: all var(--transition);
   z-index: 1001;
+}
+
+#sidebar.collapsed #sidebar-toggle {
+  right: 6px;
+  top: 50px;
 }
 
 #sidebar-toggle:hover {
