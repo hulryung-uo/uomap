@@ -6,13 +6,23 @@ const UO_MAPS = {
     name: 'Felucca',
     width: 7170,
     height: 4098,
-    description: 'The facet of danger - full PvP'
+    description: 'The facet of danger - full PvP',
+    regions: {
+      all:       { name: 'All',        x1: 0,    y1: 0,    x2: 7170, y2: 4098 },
+      britannia: { name: 'Britannia',  x1: 0,    y1: 0,    x2: 5120, y2: 4098 },
+      t2a:       { name: 'T2A',        x1: 5040, y1: 1200, x2: 6400, y2: 4098 }
+    }
   },
   trammel: {
     name: 'Trammel',
     width: 7170,
     height: 4098,
-    description: 'The safe facet - consensual PvP only'
+    description: 'The safe facet - consensual PvP only',
+    regions: {
+      all:       { name: 'All',        x1: 0,    y1: 0,    x2: 7170, y2: 4098 },
+      britannia: { name: 'Britannia',  x1: 0,    y1: 0,    x2: 5120, y2: 4098 },
+      t2a:       { name: 'T2A',        x1: 5040, y1: 1200, x2: 6400, y2: 4098 }
+    }
   },
   ilshenar: {
     name: 'Ilshenar',

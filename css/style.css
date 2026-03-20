@@ -284,6 +284,50 @@ body {
 }
 
 /* ═══════════════════════════════
+   REGION BUTTONS
+   ═══════════════════════════════ */
+.region-buttons {
+  display: flex;
+  gap: 0;
+  margin-bottom: 4px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.region-buttons:empty {
+  display: none;
+}
+
+.region-btn {
+  flex: 1;
+  padding: 8px 0;
+  border: none;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-muted);
+  font-size: 12px;
+  font-family: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+  border-right: 1px solid var(--border-color);
+}
+
+.region-btn:last-child {
+  border-right: none;
+}
+
+.region-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-secondary);
+}
+
+.region-btn.active {
+  background: rgba(139, 92, 246, 0.15);
+  color: var(--accent-hover);
+}
+
+/* ═══════════════════════════════
    LAYER CONTROLS
    ═══════════════════════════════ */
 .layer-controls {

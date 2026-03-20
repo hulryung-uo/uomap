@@ -27,6 +27,41 @@
     loadFacet(currentFacet);
   }
 
+  // ─── Region Switching ─────────────────────────────────
+  function buildRegionButtons(facet) {
+    const container = document.getElementById('region-buttons');
+    const label = document.getElementById('region-label');
+    container.innerHTML = '';
+
+    if (!facet.regions) {
+      label.style.display = 'none';
+      return;
+    }
+
+    label.style.display = '';
+
+    Object.entries(facet.regions).forEach(([regionId, region]) => {
+      const btn = document.createElement('button');
+      btn.className = 'region-btn' + (regionId === 'all' ? ' active' : '');
+      btn.textContent = region.name;
+      btn.dataset.region = regionId;
+      btn.addEventListener('click', () => {
+        container.querySelectorAll('.region-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        flyToRegion(region);
+      });
+      container.appendChild(btn);
+    });
+  }
+
+  function flyToRegion(region) {
+    const bounds = [
+      [-region.y1, region.x1],
+      [-region.y2, region.x2]
+    ];
+    map.flyToBounds(bounds, { padding: [20, 20], duration: 0.6 });
+  }
+
   // ─── Map Setup ─────────────────────────────────────────
   function initMap() {
     map = L.map('map', {
@@ -110,6 +145,9 @@
 
     // Fit view to map bounds
     map.fitBounds(bounds, { padding: [20, 20] });
+
+    // Build region buttons
+    buildRegionButtons(facet);
 
     // Load POI layers
     loadPOIs(facetId);
