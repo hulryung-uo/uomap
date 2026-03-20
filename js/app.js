@@ -835,9 +835,59 @@
       const mapEl = document.getElementById('map');
       const isIso = mapEl.classList.toggle('isometric');
       isoBtn.classList.toggle('active', isIso);
-      // Force Leaflet to recalculate sizes after transform
+
+      if (isIso) {
+        map.dragging.disable();
+        isoEnableDrag();
+      } else {
+        isoDisableDrag();
+        map.dragging.enable();
+      }
       setTimeout(() => map.invalidateSize(), 50);
     });
+  }
+
+  // ─── Isometric Drag Handler ────────────────────────────
+  // Rotates mouse delta by -45° so dragging feels natural in rotated view
+  const ISO_COS = Math.cos(-Math.PI / 4);
+  const ISO_SIN = Math.sin(-Math.PI / 4);
+  const ISO_SCALE = 1.45;
+  let _isoDrag = null;
+
+  function isoOnDown(e) {
+    if (e.button !== 0) return;
+    _isoDrag = { x: e.clientX, y: e.clientY };
+    document.addEventListener('mousemove', isoOnMove);
+    document.addEventListener('mouseup', isoOnUp);
+    map.getContainer().style.cursor = 'grabbing';
+    e.preventDefault();
+  }
+
+  function isoOnMove(e) {
+    if (!_isoDrag) return;
+    const dx = e.clientX - _isoDrag.x;
+    const dy = e.clientY - _isoDrag.y;
+    _isoDrag = { x: e.clientX, y: e.clientY };
+
+    const mx = (dx * ISO_COS - dy * ISO_SIN) / ISO_SCALE;
+    const my = (dx * ISO_SIN + dy * ISO_COS) / ISO_SCALE;
+    map.panBy([-mx, -my], { animate: false });
+  }
+
+  function isoOnUp() {
+    _isoDrag = null;
+    document.removeEventListener('mousemove', isoOnMove);
+    document.removeEventListener('mouseup', isoOnUp);
+    map.getContainer().style.cursor = '';
+  }
+
+  function isoEnableDrag() {
+    map.getContainer().addEventListener('mousedown', isoOnDown);
+  }
+
+  function isoDisableDrag() {
+    map.getContainer().removeEventListener('mousedown', isoOnDown);
+    if (_isoDrag) isoOnUp();
   }
 
   // ─── Toast ─────────────────────────────────────────────

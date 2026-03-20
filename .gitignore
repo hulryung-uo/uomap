@@ -5,3 +5,4 @@ tiles/
 images/*.png
 images/*.jpg
 *.log
+.vercel
