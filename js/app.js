@@ -648,6 +648,9 @@
     const sidebar = document.getElementById('sidebar');
     const toggle = document.getElementById('sidebar-toggle');
 
+    // Start collapsed
+    sidebar.classList.add('collapsed');
+
     toggle.addEventListener('click', () => {
       sidebar.classList.toggle('collapsed');
       const icon = toggle.querySelector('i');
@@ -795,6 +798,16 @@
   function initZoomControls() {
     document.getElementById('zoom-in').addEventListener('click', () => map.zoomIn(0.5));
     document.getElementById('zoom-out').addEventListener('click', () => map.zoomOut(0.5));
+
+    // Isometric toggle
+    const isoBtn = document.getElementById('toggle-iso');
+    isoBtn.addEventListener('click', () => {
+      const mapEl = document.getElementById('map');
+      const isIso = mapEl.classList.toggle('isometric');
+      isoBtn.classList.toggle('active', isIso);
+      // Force Leaflet to recalculate sizes after transform
+      setTimeout(() => map.invalidateSize(), 50);
+    });
   }
 
   // ─── Toast ─────────────────────────────────────────────

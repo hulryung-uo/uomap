@@ -59,6 +59,28 @@ body {
 }
 
 /* ═══════════════════════════════
+   ISOMETRIC (45deg) VIEW
+   ═══════════════════════════════ */
+#map.isometric {
+  transform: rotate(45deg) scale(1.45);
+  transform-origin: center center;
+}
+
+#map.isometric .marker-label {
+  transform: translateX(-50%) rotate(-45deg);
+}
+
+#map.isometric .leaflet-popup {
+  transform: rotate(-45deg);
+}
+
+#toggle-iso.active {
+  background: rgba(139, 92, 246, 0.25) !important;
+  color: var(--accent-hover) !important;
+  border-color: var(--border-glow) !important;
+}
+
+/* ═══════════════════════════════
    SIDEBAR
    ═══════════════════════════════ */
 #sidebar {
