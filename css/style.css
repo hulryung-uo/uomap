@@ -66,17 +66,8 @@ body {
   transform-origin: center center;
 }
 
-#map.isometric .marker-label {
-  transform: translateX(-50%) rotate(-45deg);
-}
-
-#map.isometric .custom-marker {
+#map.isometric .leaflet-popup-content-wrapper {
   transform: rotate(-45deg);
-}
-
-#map.isometric .leaflet-popup {
-  transform: rotate(-45deg);
-  transform-origin: bottom center;
 }
 
 #map.isometric .leaflet-popup-tip-container {
