@@ -70,7 +70,16 @@ body {
   transform: translateX(-50%) rotate(-45deg);
 }
 
+#map.isometric .custom-marker {
+  transform: rotate(-45deg);
+}
+
 #map.isometric .leaflet-popup {
+  transform: rotate(-45deg);
+  transform-origin: bottom center;
+}
+
+#map.isometric .leaflet-popup-tip-container {
   transform: rotate(-45deg);
 }
 
