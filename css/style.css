@@ -1086,3 +1086,19 @@ body {
     bottom: 60px;
   }
 }
+
+/* ─── Deep Link Highlight Marker ─────────────────────── */
+.deeplink-pulse {
+  animation: deeplink-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes deeplink-pulse {
+  0%, 100% {
+    stroke-opacity: 1;
+    fill-opacity: 0.35;
+  }
+  50% {
+    stroke-opacity: 0.4;
+    fill-opacity: 0.1;
+  }
+}

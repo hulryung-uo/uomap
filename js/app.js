@@ -10,13 +10,66 @@
   let vendorMarkers = {};
   let contextMenuCoords = null;
   let editingVendorId = null;
+  let pendingDeepLink = null;
+  let deepLinkMarker = null;
 
   // ─── Constants ─────────────────────────────────────────
   const STORAGE_KEY = 'uo_map_vendors';
   const LAYER_VISIBILITY_KEY = 'uo_map_layers';
 
+  // ─── URL Deep Links ────────────────────────────────────
+  // Supports e.g. ?facet=felucca&x=1495&y=1629&z=1
+  function parseDeepLink() {
+    const params = new URLSearchParams(window.location.search);
+    const facetParam = (params.get('facet') || '').toLowerCase();
+    const x = parseInt(params.get('x'), 10);
+    const y = parseInt(params.get('y'), 10);
+    const z = parseFloat(params.get('z'));
+    const hasCoords = !isNaN(x) && !isNaN(y);
+    const facet = UO_MAPS[facetParam] ? facetParam : (facetParam || hasCoords ? 'felucca' : null);
+
+    if (!facet && !hasCoords) return null;
+
+    return {
+      facet: facet,
+      x: hasCoords ? x : null,
+      y: hasCoords ? y : null,
+      z: isNaN(z) ? null : z
+    };
+  }
+
+  function applyDeepLink(link) {
+    const minZoom = map.getMinZoom();
+    const maxZoom = map.getMaxZoom();
+    let zoom = link.z !== null ? link.z : 1; // sensible close zoom by default
+    zoom = Math.max(minZoom, Math.min(maxZoom, zoom));
+
+    map.setView([-link.y, link.x], zoom);
+
+    // Temporary highlight marker
+    deepLinkMarker = L.circleMarker([-link.y, link.x], {
+      radius: 10,
+      color: '#ff3b6b',
+      weight: 3,
+      fillColor: '#ff3b6b',
+      fillOpacity: 0.35,
+      className: 'deeplink-pulse'
+    }).addTo(map);
+
+    deepLinkMarker.bindPopup(
+      `<div class="popup-content"><div class="popup-coords">X: ${link.x} &nbsp; Y: ${link.y}</div></div>`,
+      { maxWidth: 200, closeButton: false, offset: [0, -8] }
+    ).openPopup();
+  }
+
   // ─── Initialize ────────────────────────────────────────
   function init() {
+    pendingDeepLink = parseDeepLink();
+    if (pendingDeepLink && pendingDeepLink.facet) {
+      currentFacet = pendingDeepLink.facet;
+      const select = document.getElementById('map-select');
+      if (select) select.value = currentFacet;
+    }
     initMap();
     initSidebar();
     initLayerControls();
@@ -113,6 +166,11 @@
       mapImageLayer = null;
     }
 
+    if (deepLinkMarker) {
+      map.removeLayer(deepLinkMarker);
+      deepLinkMarker = null;
+    }
+
     // Set bounds: top-left [0, 0] => lat=0, lng=0; bottom-right => lat=-height, lng=width
     const bounds = [[0, 0], [-facet.height, facet.width]];
     map.setMaxBounds([[-facet.height - 500, -500], [500, facet.width + 500]]);
@@ -143,8 +201,14 @@
     };
     img.src = imgPath;
 
-    // Fit view to map bounds
-    map.fitBounds(bounds, { padding: [20, 20] });
+    // Fit view to map bounds, unless a URL deep link targets a spot (one-time)
+    if (pendingDeepLink && pendingDeepLink.x !== null && pendingDeepLink.facet === facetId) {
+      applyDeepLink(pendingDeepLink);
+      pendingDeepLink = null;
+    } else {
+      pendingDeepLink = null;
+      map.fitBounds(bounds, { padding: [20, 20] });
+    }
 
     // Build region buttons
     buildRegionButtons(facet);
